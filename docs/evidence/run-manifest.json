@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "run_id": "oci-20260918",
-  "source_commit": "4a136c339e1aa1132c28aa3ebc227f485f068c15",
-  "source_commit_note": "The tested source tree was captured in the initial implementation commit; this manifest update follows it.",
+  "source_commit": "e0efe687b3f4e57479c24a13027ac8320100bffb",
+  "source_commit_note": "The tested source and hardened RBAC are captured in this commit; this manifest-only update follows it.",
   "started_at_utc": "2026-09-18T20:27:00Z",
-  "finished_at_utc": "2026-09-18T20:29:24Z",
+  "finished_at_utc": "2026-09-18T20:54:12Z",
   "host": {"provider": "OCI", "architecture": "arm64", "cpu_count": 4, "memory_gib": 23},
   "tool_versions": {"python": "3.12.3", "uv": "0.11.17", "docker": "29.4.3", "kind": "0.33.0", "kubernetes": "1.37.0", "helm": "4.3.0"},
   "uv_lock_sha256": "8ccb1b2f47c6b4cab90c464f1aa1045e0998d7cca430d0aacf90f023a67047d5",
-  "image": {"reference": "agentshield:local", "digest": "sha256:9f1a11fd875d7beb5159974044443a9957641b581fb00c27015496fb2e9b7bd7", "architecture": "arm64", "size_bytes": 67866969},
+  "image": {"reference": "agentshield:local", "digest": "sha256:d4c9a78093632e5fd64d124a73b50f111c6f6abfcca63312cadd86ce50ebc547", "architecture": "arm64", "size_bytes": 67866931},
   "results": {"tests_passed": 43, "coverage_percent": 72.31, "authorized_delivery": "pass", "unauthorized_delivery": "denied_http_403", "cluster_teardown": "verified"},
   "artifacts_sha256": {
     "oci/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
@@ -18,7 +18,8 @@
     "oci/semgrep-output.log": "4093245f009550fa90f8a06f34a033232ea42d95e432f9e8f2c489c8b2cb52de",
     "oci/pip-audit.log": "b7e92da7a826a67e14afe26d964f63cd4fe231d133ed9b2b95497734121b4ab8",
     "oci/helm-lint.log": "488317fed394cf2f6cbc4aadbe4ab3fde91b316dfea647db016f4772456e18fa",
-    "oci/kind-smoke.log": "bd8da534bf6b583512c737656b5b51ba888bf78e301685f9b62e8c588504616a"
+    "oci/kind-smoke.log": "50a6231abb14726fa2803cd9285b2fc357c852c43325754c5c27ca05d49424e4",
+    "oci/trivy.log": "8caaebbee60c2e311f213f29b5a4a163cf6e64febb9abc7b64b5d4e0d70c7f12"
   },
   "cost": {"incremental_usd": 0.0, "note": "Existing OCI instance only; standing instance price not claimed as zero. No GCP resources created."}
 }
