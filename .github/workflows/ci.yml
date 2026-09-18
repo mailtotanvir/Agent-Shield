@@ -43,7 +43,9 @@ jobs:
           scan-type: fs
           scan-ref: .
           scanners: vuln,misconfig,secret
-          skip-dirs: helm/agentshield
+          # Dependencies are audited from uv.lock; scanning the hydrated .venv
+          # duplicates that result and also includes build-tool packages.
+          skip-dirs: helm/agentshield,.venv,.cache
           severity: HIGH,CRITICAL
           exit-code: "1"
       - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
