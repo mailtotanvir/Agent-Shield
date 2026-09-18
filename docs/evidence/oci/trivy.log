@@ -1,0 +1,56 @@
+2026-09-18T20:54:02Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-09-18T20:54:02Z	INFO	[misconfig] Misconfiguration scanning is enabled
+2026-09-18T20:54:02Z	INFO	[checks-client] No downloadable checks were loaded as --skip-check-update is enabled, loading from existing cache...
+2026-09-18T20:54:04Z	INFO	[secret] Secret scanning is enabled
+2026-09-18T20:54:04Z	INFO	[secret] If your scanning is slow, please try '--scanners vuln,misconfig' to disable secret scanning
+2026-09-18T20:54:04Z	INFO	[secret] Please see https://trivy.dev/docs/v0.69/guide/scanner/secret#recommendation for faster secret detection
+2026-09-18T20:54:10Z	INFO	Number of language-specific files	num=1
+2026-09-18T20:54:10Z	INFO	[uv] Detecting vulnerabilities...
+2026-09-18T20:54:10Z	INFO	Detected config files	num=4
+
+Report Summary
+
+┌─────────────────────────────────────┬────────────┬─────────────────┬───────────────────┬─────────┐
+│               Target                │    Type    │ Vulnerabilities │ Misconfigurations │ Secrets │
+├─────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼─────────┤
+│ uv.lock                             │     uv     │        0        │         -         │    -    │
+├─────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼─────────┤
+│ Dockerfile                          │ dockerfile │        -        │         0         │    -    │
+├─────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼─────────┤
+│ examples/agent-pod.yaml             │ kubernetes │        -        │         0         │    -    │
+├─────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼─────────┤
+│ tests/integration/kind-jobs.yaml    │ kubernetes │        -        │         0         │    -    │
+├─────────────────────────────────────┼────────────┼─────────────────┼───────────────────┼─────────┤
+│ tests/integration/kind-prereqs.yaml │ kubernetes │        -        │         0         │    -    │
+└─────────────────────────────────────┴────────────┴─────────────────┴───────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+📣 [34mNotices:[0m
+  - Version 0.74.0 of Trivy is now available, current version is 0.69.3
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
+2026-09-18T20:54:11Z	INFO	[misconfig] Misconfiguration scanning is enabled
+2026-09-18T20:54:11Z	INFO	[checks-client] No downloadable checks were loaded as --skip-check-update is enabled, loading from existing cache...
+2026-09-18T20:54:12Z	INFO	Detected config files	num=1
+
+Report Summary
+
+┌───────────────┬────────────┬───────────────────┐
+│    Target     │    Type    │ Misconfigurations │
+├───────────────┼────────────┼───────────────────┤
+│ rendered.yaml │ kubernetes │         0         │
+└───────────────┴────────────┴───────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+📣 [34mNotices:[0m
+  - Version 0.74.0 of Trivy is now available, current version is 0.69.3
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+

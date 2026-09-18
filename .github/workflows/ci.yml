@@ -26,9 +26,29 @@ jobs:
         env:
           SEMGREP_SEND_METRICS: "off"
       - run: uv run pip-audit
+      - name: Render Helm chart for policy scan
+        run: >-
+          helm template test helm/agentshield
+          --namespace agentshield-system
+          --set image.repository=agentshield
+          --set image.tag=scan
+          --set tls.secretName=broker-tls
+          --set gcp.kmsKeyRef=projects/test/locations/global/keyRings/test/cryptoKeys/test
+          --set runtime.environment=test
+          --set runtime.kmsProvider=fake
+          --set runtime.fakeKmsSecretName=fake-kms
+          > /tmp/agentshield-rendered.yaml
       - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
         with:
           scan-type: fs
           scan-ref: .
+          scanners: vuln,misconfig,secret
+          skip-dirs: helm/agentshield
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+        with:
+          scan-type: config
+          scan-ref: /tmp/agentshield-rendered.yaml
           severity: HIGH,CRITICAL
           exit-code: "1"

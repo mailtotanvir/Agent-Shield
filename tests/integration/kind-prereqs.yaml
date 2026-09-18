@@ -1,11 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: agents
-  labels:
-    agentshield.io/secret-access: "true"
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: agent-runner
@@ -38,4 +31,3 @@ spec:
     scopedTo:
       matchLabels:
         app: authorized-agent
-

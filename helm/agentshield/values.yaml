@@ -5,6 +5,7 @@ image:
   pullPolicy: IfNotPresent
 
 replicaCount: 1
+targetNamespace: agents
 
 gcp:
   kmsKeyRef: ""

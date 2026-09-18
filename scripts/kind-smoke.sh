@@ -28,6 +28,8 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
   -keyout "$WORK_DIR/tls.key" -out "$WORK_DIR/tls.crt" >/dev/null 2>&1
 
 "$KUBECTL_BIN" create namespace "$SYSTEM_NAMESPACE"
+"$KUBECTL_BIN" create namespace agents
+"$KUBECTL_BIN" label namespace agents agentshield.io/secret-access=true
 "$KUBECTL_BIN" --namespace "$SYSTEM_NAMESPACE" create secret tls broker-tls \
   --cert "$WORK_DIR/tls.crt" --key "$WORK_DIR/tls.key"
 "$KUBECTL_BIN" --namespace "$SYSTEM_NAMESPACE" create secret generic fake-kms \

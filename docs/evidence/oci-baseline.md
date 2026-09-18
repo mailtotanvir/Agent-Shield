@@ -30,9 +30,12 @@ virtual environment, binaries, evidence staging, and cluster were isolated under
 - Bandit: no findings.
 - custom Semgrep policy: 0 findings across 35 Python targets.
 - pip-audit: no known vulnerabilities in locked third-party dependencies.
+- Trivy: no HIGH/CRITICAL dependency, secret, Dockerfile, or rendered Kubernetes
+  manifest findings. The first scan identified cluster-wide Secret read access;
+  the chart was narrowed to namespace-scoped Roles before the passing rerun.
 - Helm lint: pass.
-- OCI ARM64 image: `sha256:9f1a11fd875d7beb5159974044443a9957641b581fb00c27015496fb2e9b7bd7`,
-  67,866,969 bytes.
+- OCI ARM64 image: `sha256:d4c9a78093632e5fd64d124a73b50f111c6f6abfcca63312cadd86ce50ebc547`,
+  67,866,931 bytes.
 - Kubernetes end-to-end: broker and operator rolled out; an allowed pod received
   the expected secret generation and SHA-256; an unlisted ServiceAccount received
   HTTP 403.

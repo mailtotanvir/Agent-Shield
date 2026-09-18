@@ -8,9 +8,18 @@ metadata:
 spec:
   serviceAccountName: agent-runner
   automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   containers:
     - name: agent
       image: example.invalid/replace-with-agent-image@sha256:REPLACE
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
       volumeMounts:
         - name: delivered-secret
           mountPath: /run/agentshield
@@ -58,4 +67,3 @@ spec:
     - name: broker-ca
       configMap:
         name: agentshield-broker-ca
-

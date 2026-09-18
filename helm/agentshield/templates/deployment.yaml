@@ -105,7 +105,13 @@ spec:
         - name: operator
           image: {{ include "agentshield.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["kopf", "run", "-m", "agentshield.secrets.operator", "--all-namespaces"]
+          command:
+            - kopf
+            - run
+            - -m
+            - agentshield.secrets.operator
+            - --namespace
+            - {{ required "targetNamespace is required" .Values.targetNamespace | quote }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
