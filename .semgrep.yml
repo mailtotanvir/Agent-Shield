@@ -1,0 +1,31 @@
+rules:
+  - id: agentshield-no-unverified-jwt-decode
+    languages: [python]
+    severity: ERROR
+    message: JWT signature verification must never be disabled.
+    patterns:
+      - pattern: >-
+          jwt.decode(..., options={..., "verify_signature": False, ...}, ...)
+
+  - id: agentshield-no-shell-true
+    languages: [python]
+    severity: ERROR
+    message: Shell execution is forbidden in AgentShield runtime code.
+    pattern-either:
+      - pattern: subprocess.$FUNC(..., shell=True, ...)
+      - pattern: os.system(...)
+
+  - id: agentshield-no-token-log
+    languages: [python]
+    severity: WARNING
+    message: Never pass token-like values directly to logging calls.
+    patterns:
+      - pattern-either:
+          - pattern: $LOGGER.debug(..., $TOKEN, ...)
+          - pattern: $LOGGER.info(..., $TOKEN, ...)
+          - pattern: $LOGGER.warning(..., $TOKEN, ...)
+          - pattern: $LOGGER.error(..., $TOKEN, ...)
+          - pattern: $LOGGER.exception(..., $TOKEN, ...)
+      - metavariable-regex:
+          metavariable: $TOKEN
+          regex: (?i)^(token|access_token|refresh_token|secret|authorization|cookie)$

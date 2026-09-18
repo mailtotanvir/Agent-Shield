@@ -1,0 +1,135 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: agentshield-authorized
+  namespace: agents
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: authorized-agent
+    spec:
+      restartPolicy: Never
+      serviceAccountName: agent-runner
+      automountServiceAccountToken: false
+      initContainers:
+        - name: secret-agent
+          image: agentshield:local
+          imagePullPolicy: Never
+          restartPolicy: Always
+          command: ["agentshield-secret-agent"]
+          env:
+            - name: AGENTSHIELD_BROKER_URL
+              value: https://test-agentshield-broker.agentshield-system.svc
+            - name: AGENTSHIELD_SECRET_NAMESPACE
+              value: agents
+            - name: AGENTSHIELD_SECRET_NAME
+              value: llm-key
+            - name: AGENTSHIELD_BROKER_CA_FILE
+              value: /var/run/agentshield-ca/ca.crt
+            - name: AGENTSHIELD_POLL_SECONDS
+              value: "5"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: delivered-secret
+              mountPath: /run/agentshield
+            - name: broker-token
+              mountPath: /var/run/secrets/agentshield
+              readOnly: true
+            - name: broker-ca
+              mountPath: /var/run/agentshield-ca
+              readOnly: true
+      containers:
+        - name: verifier
+          image: agentshield:local
+          imagePullPolicy: Never
+          command: ["python", "-m", "agentshield.secrets.verifier"]
+          env:
+            - name: AGENTSHIELD_EXPECTED_SHA256
+              valueFrom:
+                configMapKeyRef:
+                  name: agentshield-expected
+                  key: sha256
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: delivered-secret
+              mountPath: /run/agentshield
+              readOnly: true
+      volumes:
+        - name: delivered-secret
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Mi
+        - name: broker-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  audience: agentshield-broker
+                  expirationSeconds: 600
+        - name: broker-ca
+          configMap:
+            name: agentshield-broker-ca
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: agentshield-denied
+  namespace: agents
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: unauthorized-agent
+    spec:
+      restartPolicy: Never
+      serviceAccountName: unauthorized-agent
+      automountServiceAccountToken: false
+      containers:
+        - name: probe
+          image: agentshield:local
+          imagePullPolicy: Never
+          command: ["python", "-m", "agentshield.secrets.probe"]
+          env:
+            - name: AGENTSHIELD_SECRET_URL
+              value: https://test-agentshield-broker.agentshield-system.svc/v1/secrets/agents/llm-key
+            - name: AGENTSHIELD_TOKEN_PATH
+              value: /var/run/secrets/agentshield/token
+            - name: AGENTSHIELD_BROKER_CA_FILE
+              value: /var/run/agentshield-ca/ca.crt
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: broker-token
+              mountPath: /var/run/secrets/agentshield
+              readOnly: true
+            - name: broker-ca
+              mountPath: /var/run/agentshield-ca
+              readOnly: true
+      volumes:
+        - name: broker-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  audience: agentshield-broker
+                  expirationSeconds: 600
+        - name: broker-ca
+          configMap:
+            name: agentshield-broker-ca
+

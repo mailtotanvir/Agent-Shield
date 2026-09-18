@@ -1,0 +1,43 @@
+image:
+  repository: ""
+  tag: ""
+  digest: ""
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+gcp:
+  kmsKeyRef: ""
+  serviceAccount: ""
+
+runtime:
+  environment: production
+  kmsProvider: gcp
+  fakeKmsSecretName: ""
+
+tls:
+  secretName: ""
+
+broker:
+  port: 8443
+  resources:
+    requests:
+      cpu: 50m
+      memory: 96Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+operator:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 192Mi
+
+networkPolicy:
+  enabled: true
+  allowedNamespaceLabels:
+    agentshield.io/secret-access: "true"

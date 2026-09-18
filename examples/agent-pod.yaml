@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-agent
+  namespace: agents
+  labels:
+    app: example-agent
+spec:
+  serviceAccountName: agent-runner
+  automountServiceAccountToken: false
+  containers:
+    - name: agent
+      image: example.invalid/replace-with-agent-image@sha256:REPLACE
+      volumeMounts:
+        - name: delivered-secret
+          mountPath: /run/agentshield
+          readOnly: true
+    - name: agentshield-secret-agent
+      image: example.invalid/replace-with-agentshield-image@sha256:REPLACE
+      command: ["agentshield-secret-agent"]
+      env:
+        - name: AGENTSHIELD_BROKER_URL
+          value: https://agentshield-agentshield-broker.agentshield.svc
+        - name: AGENTSHIELD_SECRET_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: AGENTSHIELD_SECRET_NAME
+          value: llm-api-keys
+        - name: AGENTSHIELD_BROKER_CA_FILE
+          value: /var/run/agentshield-ca/ca.crt
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      volumeMounts:
+        - name: delivered-secret
+          mountPath: /run/agentshield
+        - name: broker-token
+          mountPath: /var/run/secrets/agentshield
+          readOnly: true
+        - name: broker-ca
+          mountPath: /var/run/agentshield-ca
+          readOnly: true
+  volumes:
+    - name: delivered-secret
+      emptyDir:
+        medium: Memory
+        sizeLimit: 2Mi
+    - name: broker-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: agentshield-broker
+              expirationSeconds: 600
+    - name: broker-ca
+      configMap:
+        name: agentshield-broker-ca
+

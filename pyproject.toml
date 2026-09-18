@@ -1,0 +1,89 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentshield"
+version = "0.1.0.dev0"
+description = "OIDC, token-policy, and Kubernetes secret delivery for client agents"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Tanvir" }]
+dependencies = [
+  "cryptography>=50.0.0,<51",
+  "fastapi>=0.116,<1",
+  "google-cloud-kms>=3.5,<4",
+  "google-crc32c>=1.7,<2",
+  "httpx>=0.28,<1",
+  "kopf>=1.38,<2",
+  "kubernetes-asyncio>=33.3,<34",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "PyJWT[crypto]>=2.10.1,<3",
+  "redis>=6.4,<7",
+  "typer>=0.17,<1",
+  "uvicorn>=0.35,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "bandit>=1.8,<2",
+  "fakeredis>=2.31,<3",
+  "hypothesis>=6.138,<7",
+  "mypy>=1.17,<2",
+  "pip-audit>=2.9,<3",
+  "pytest>=9.0.3,<10",
+  "pytest-asyncio>=1.1,<2",
+  "pytest-cov>=6.2,<7",
+  "respx>=0.22,<1",
+  "ruff>=0.12,<1",
+  "semgrep>=1.136,<2",
+]
+
+[project.scripts]
+agentshield = "agentshield.secrets.cli:app"
+agentshield-broker = "agentshield.secrets.broker:main"
+agentshield-secret-agent = "agentshield.secrets.sidecar:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentshield"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["agentshield"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 70
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "ASYNC", "RUF"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+"agentshield/config.py" = ["S105"]
+"agentshield/identity/google.py" = ["S106"]
+"agentshield/secrets/broker.py" = ["S104"]
+"agentshield/secrets/kubernetes.py" = ["S105"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["kubernetes_asyncio", "kubernetes_asyncio.*"]
+ignore_missing_imports = true

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agents
+  labels:
+    agentshield.io/secret-access: "true"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: agent-runner
+  namespace: agents
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: unauthorized-agent
+  namespace: agents
+---
+apiVersion: agentshield.io/v1alpha1
+kind: AgentSecret
+metadata:
+  name: llm-key
+  namespace: agents
+spec:
+  secretType: APIKey
+  rotation:
+    enabled: true
+    intervalHours: 24
+    notifyOnRotation: true
+  encryption:
+    provider: gcp-kms
+    keyRef: projects/test/locations/global/keyRings/test/cryptoKeys/test
+  access:
+    allowedServiceAccounts:
+      - name: agent-runner
+        namespace: agents
+    scopedTo:
+      matchLabels:
+        app: authorized-agent
+

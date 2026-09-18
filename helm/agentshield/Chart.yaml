@@ -1,0 +1,7 @@
+apiVersion: v2
+name: agentshield
+description: AgentShield encrypted-secret controller and authenticated broker
+type: application
+version: 0.1.0
+appVersion: "0.1.0-dev"
+

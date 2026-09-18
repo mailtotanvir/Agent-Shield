@@ -1,0 +1,36 @@
+...........................................                              [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                                Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------------------------
+agentshield/audit/redactor.py          23      1     10      1    94%   47
+agentshield/authz/exchange.py          44      6     12      6    79%   25, 38->exit, 57->59, 60, 62, 74-75, 78
+agentshield/authz/policy.py            48      6     22      6    83%   29, 33, 51, 53, 55, 58
+agentshield/config.py                  35      0     12      1    98%   33->45
+agentshield/identity/base.py            3      3      0      0     0%   3-8
+agentshield/identity/iap.py            11      3      2      1    69%   13-14, 21
+agentshield/identity/oidc.py          104     16     24     10    80%   40, 42, 79->exit, 109, 118, 128, 134->136, 139-140, 143->145, 149-150, 152, 164-165, 180, 187, 193, 213
+agentshield/models.py                  64      2      4      2    94%   45, 66
+agentshield/secrets/broker.py         112     59     12      1    45%   69-81, 85-99, 112, 124-125, 142-157, 161-197, 207
+agentshield/secrets/cli.py             52     52      6      0     0%   3-110
+agentshield/secrets/envelope.py        63      9      8      4    82%   24-25, 59, 78, 80, 84-85, 90-91
+agentshield/secrets/kms/fake.py        23      2      4      2    85%   17, 29
+agentshield/secrets/kms/gcp.py         48     11     10      4    74%   24, 30, 53, 57-58, 78, 81, 83-86
+agentshield/secrets/kubernetes.py      78     13     14      5    80%   46-47, 53, 56, 71, 90-91, 98, 107-108, 110, 130-131
+agentshield/secrets/operator.py        53     17     12      4    65%   18, 21, 43-47, 81-90, 104, 110-115
+agentshield/secrets/probe.py           15     15      4      0     0%   3-31
+agentshield/secrets/sidecar.py         49     24     10      3    47%   16, 19->21, 34-63, 67, 71
+agentshield/secrets/verifier.py        16     16      6      0     0%   3-22
+agentshield/session/dpop.py            78     12     22      8    80%   31, 74, 102, 105, 108, 116-119, 122, 126, 128
+agentshield/session/jwks.py            56      9     18      7    78%   35->38, 39, 42, 44, 47-48, 51, 57, 61, 65
+agentshield/session/revocation.py      28      7      2      0    77%   31-32, 37-38, 41-42, 45
+agentshield/session/validator.py       55      9     12      5    79%   34, 37-38, 43, 46, 58-59, 69, 73
+agentshield/session/vault.py          209     37     44     14    77%   81, 89-90, 115, 121->exit, 130-135, 141-144, 168, 183, 188, 202-205, 221-222, 224, 228-231, 237, 239->exit, 246, 274, 299-301, 319-320, 334
+-------------------------------------------------------------------------------
+TOTAL                                1355    329    274     84    72%
+
+12 files skipped due to complete coverage.
+Coverage XML written to file coverage.xml
+Required test coverage of 70.0% reached. Total coverage: 72.31%
+43 passed in 7.88s

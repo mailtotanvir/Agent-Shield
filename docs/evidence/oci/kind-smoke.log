@@ -1,0 +1,236 @@
+Creating cluster "agentshield-evidence" ...
+ • Ensuring node image (kindest/node:v1.37.0) 🖼️  ...
+ ✓ Ensuring node image (kindest/node:v1.37.0) 🖼️
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+ • Waiting ≤ 2m0s for control-plane = Ready ⏳  ...
+ ✓ Waiting ≤ 2m0s for control-plane = Ready ⏳
+ • Ready after 17s 💚
+Set kubectl context to "kind-agentshield-evidence"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-agentshield-evidence
+
+Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 789B done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 0.6s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#3 sha256:6e230fe0035dc5b9d8d5e65513d1f11ae3b25d14362031fb540a4c23bf862933 11.24MB / 11.24MB 0.2s
+#3 sha256:6e230fe0035dc5b9d8d5e65513d1f11ae3b25d14362031fb540a4c23bf862933 11.24MB / 11.24MB 0.2s done
+#3 extracting sha256:6e230fe0035dc5b9d8d5e65513d1f11ae3b25d14362031fb540a4c23bf862933
+#3 extracting sha256:6e230fe0035dc5b9d8d5e65513d1f11ae3b25d14362031fb540a4c23bf862933 0.2s done
+#3 DONE 0.5s
+
+#4 [internal] load metadata for docker.io/library/python:3.12.11-slim@sha256:47ae396f09c1303b8653019811a8498470603d7ffefc29cb07c88f1f8cb3d19f
+#4 DONE 0.5s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 130B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 804.21kB 0.0s done
+#6 DONE 0.1s
+
+#7 [build 1/6] FROM docker.io/library/python:3.12.11-slim@sha256:47ae396f09c1303b8653019811a8498470603d7ffefc29cb07c88f1f8cb3d19f
+#7 resolve docker.io/library/python:3.12.11-slim@sha256:47ae396f09c1303b8653019811a8498470603d7ffefc29cb07c88f1f8cb3d19f 0.0s done
+#7 sha256:662344ac6e6aaabc5ecfcfe271702a86a99e793897d1fd9ba75bbb76913cf750 248B / 248B 0.0s done
+#7 sha256:cf12fa020ec468b1ab740eac1872a3833a5d1600ee932908b13ffe7a2f8e8f40 1.27MB / 1.27MB 0.1s done
+#7 sha256:6b9c19a60ad3cf0fa6853ff76163604091b7215dfdad8079964a0746527fea6f 12.04MB / 12.04MB 0.2s done
+#7 sha256:e363695fcb930d5f18449254c0052117582c3de4263c91575b0a9040c986e412 30.14MB / 30.14MB 0.3s
+#7 sha256:e363695fcb930d5f18449254c0052117582c3de4263c91575b0a9040c986e412 30.14MB / 30.14MB 0.3s done
+#7 extracting sha256:e363695fcb930d5f18449254c0052117582c3de4263c91575b0a9040c986e412
+#7 extracting sha256:e363695fcb930d5f18449254c0052117582c3de4263c91575b0a9040c986e412 0.6s done
+#7 DONE 1.0s
+
+#7 [build 1/6] FROM docker.io/library/python:3.12.11-slim@sha256:47ae396f09c1303b8653019811a8498470603d7ffefc29cb07c88f1f8cb3d19f
+#7 extracting sha256:cf12fa020ec468b1ab740eac1872a3833a5d1600ee932908b13ffe7a2f8e8f40 0.1s done
+#7 extracting sha256:6b9c19a60ad3cf0fa6853ff76163604091b7215dfdad8079964a0746527fea6f
+#7 extracting sha256:6b9c19a60ad3cf0fa6853ff76163604091b7215dfdad8079964a0746527fea6f 0.3s done
+#7 DONE 1.4s
+
+#7 [build 1/6] FROM docker.io/library/python:3.12.11-slim@sha256:47ae396f09c1303b8653019811a8498470603d7ffefc29cb07c88f1f8cb3d19f
+#7 extracting sha256:662344ac6e6aaabc5ecfcfe271702a86a99e793897d1fd9ba75bbb76913cf750 0.0s done
+#7 DONE 1.4s
+
+#8 [build 2/6] WORKDIR /build
+#8 DONE 0.8s
+
+#9 [build 3/6] RUN pip install --no-cache-dir uv==0.11.17
+#9 2.134 Collecting uv==0.11.17
+#9 2.227   Downloading uv-0.11.17-py3-none-manylinux_2_28_aarch64.whl.metadata (11 kB)
+#9 2.264 Downloading uv-0.11.17-py3-none-manylinux_2_28_aarch64.whl (23.5 MB)
+#9 2.945    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.5/23.5 MB 34.7 MB/s eta 0:00:00
+#9 2.971 Installing collected packages: uv
+#9 3.206 Successfully installed uv-0.11.17
+#9 3.206 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 3.266 
+#9 3.266 [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+#9 3.266 [notice] To update, run: pip install --upgrade pip
+#9 DONE 3.6s
+
+#10 [build 4/6] COPY pyproject.toml uv.lock README.md ./
+#10 DONE 0.1s
+
+#11 [build 5/6] COPY agentshield ./agentshield
+#11 DONE 0.0s
+
+#12 [build 6/6] RUN UV_PROJECT_ENVIRONMENT=/opt/venv uv sync --frozen --no-dev --no-editable
+#12 0.305 Using CPython 3.12.11 interpreter at: /usr/local/bin/python3
+#12 0.305 Creating virtual environment at: /opt/venv
+#12 0.336    Building agentshield @ file:///build
+#12 0.432 Downloading kubernetes-asyncio (2.1MiB)
+#12 0.432 Downloading aiohttp (1.7MiB)
+#12 0.433 Downloading grpcio (6.7MiB)
+#12 0.434 Downloading pydantic-core (1.9MiB)
+#12 0.434 Downloading cryptography (4.5MiB)
+#12 0.435 Downloading pygments (1.2MiB)
+#12 0.872  Downloaded pydantic-core
+#12 0.954  Downloaded aiohttp
+#12 0.964  Downloaded grpcio
+#12 0.977  Downloaded cryptography
+#12 0.998  Downloaded pygments
+#12 1.066  Downloaded kubernetes-asyncio
+#12 1.310       Built agentshield @ file:///build
+#12 1.313 Prepared 62 packages in 992ms
+#12 1.355 Installed 62 packages in 41ms
+#12 1.355  + agentshield==0.1.0.dev0 (from file:///build)
+#12 1.355  + aiohappyeyeballs==2.7.1
+#12 1.355  + aiohttp==3.14.3
+#12 1.355  + aiosignal==1.4.0
+#12 1.355  + annotated-doc==0.0.5
+#12 1.355  + annotated-types==0.8.0
+#12 1.355  + anyio==4.15.1
+#12 1.355  + attrs==26.1.0
+#12 1.355  + certifi==2026.7.22
+#12 1.355  + cffi==2.1.1
+#12 1.355  + charset-normalizer==3.5.1
+#12 1.355  + click==8.4.2
+#12 1.355  + cryptography==50.0.1
+#12 1.355  + fastapi==0.141.1
+#12 1.355  + frozenlist==1.8.0
+#12 1.355  + google-api-core==2.34.0
+#12 1.355  + google-auth==2.58.0
+#12 1.355  + google-cloud-kms==3.17.0
+#12 1.355  + google-crc32c==1.8.0
+#12 1.355  + googleapis-common-protos==1.75.3
+#12 1.355  + grpc-google-iam-v1==0.14.5
+#12 1.355  + grpcio==1.84.0
+#12 1.355  + grpcio-status==1.84.0
+#12 1.355  + h11==0.16.0
+#12 1.355  + httpcore==1.0.9
+#12 1.355  + httpx==0.28.1
+#12 1.355  + idna==3.20
+#12 1.355  + iso8601==2.1.0
+#12 1.355  + jsonpatch==1.33
+#12 1.355  + jsonpointer==3.1.1
+#12 1.355  + kopf==1.44.6
+#12 1.355  + kubernetes-asyncio==33.3.0
+#12 1.355  + markdown-it-py==4.2.0
+#12 1.355  + mdurl==0.1.2
+#12 1.355  + multidict==6.9.0
+#12 1.355  + propcache==0.5.4
+#12 1.355  + proto-plus==1.28.4
+#12 1.355  + protobuf==6.33.6
+#12 1.355  + pyasn1==0.6.4
+#12 1.355  + pyasn1-modules==0.4.2
+#12 1.355  + pycparser==3.0
+#12 1.355  + pydantic==2.13.5
+#12 1.355  + pydantic-core==2.46.5
+#12 1.355  + pydantic-settings==2.15.0
+#12 1.356  + pygments==2.21.0
+#12 1.356  + pyjwt==2.13.0
+#12 1.356  + python-dateutil==2.9.0.post0
+#12 1.356  + python-dotenv==1.2.3
+#12 1.356  + python-json-logger==4.2.0
+#12 1.356  + pyyaml==6.0.3
+#12 1.356  + redis==6.4.0
+#12 1.356  + requests==2.34.2
+#12 1.356  + rich==15.0.0
+#12 1.356  + shellingham==1.5.4
+#12 1.356  + six==1.17.0
+#12 1.356  + starlette==1.6.0
+#12 1.356  + typer==0.27.2
+#12 1.356  + typing-extensions==4.16.0
+#12 1.356  + typing-inspection==0.4.4
+#12 1.356  + urllib3==2.8.0
+#12 1.356  + uvicorn==0.53.0
+#12 1.356  + yarl==1.25.1
+#12 DONE 1.7s
+
+#13 [stage-1 2/3] COPY --from=build /opt/venv /opt/venv
+#13 DONE 0.6s
+
+#14 [stage-1 3/3] RUN groupadd --system --gid 65532 agentshield     && useradd --system --uid 65532 --gid agentshield --no-create-home agentshield
+#14 0.219 useradd warning: agentshield's uid 65532 is greater than SYS_UID_MAX 999
+#14 DONE 0.3s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 3.1s done
+#15 exporting manifest sha256:e5f7223136159913dd1e1b780f9667cc0a9c6f7cafbc517e29ff45ef7f8f90d0 0.0s done
+#15 exporting config sha256:e443f6f8250f0b6cd963b3c0532166629b56cc23096761bf7034eefb8a11262a 0.0s done
+#15 exporting attestation manifest sha256:c5c50dcda6710e7a5db3df6acc06413fe5b1f2aea25477da4c4829a11f0908a6 0.0s done
+#15 exporting manifest list sha256:9f1a11fd875d7beb5159974044443a9957641b581fb00c27015496fb2e9b7bd7 0.0s done
+#15 naming to docker.io/library/agentshield:local done
+#15 unpacking to docker.io/library/agentshield:local
+#15 unpacking to docker.io/library/agentshield:local 0.7s done
+#15 DONE 3.9s
+Image: "agentshield:local" with ID "sha256:9f1a11fd875d7beb5159974044443a9957641b581fb00c27015496fb2e9b7bd7" not yet present on node "agentshield-evidence-control-plane", loading...
+namespace/agentshield-system created
+secret/broker-tls created
+secret/fake-kms created
+NAME: test
+LAST DEPLOYED: Fri Sep 18 20:27:25 2026
+NAMESPACE: agentshield-system
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+namespace/agents created
+serviceaccount/agent-runner created
+serviceaccount/unauthorized-agent created
+agentsecret.agentshield.io/llm-key created
+configmap/agentshield-broker-ca created
+secret/agentshield-envelope-llm-key-513242da0b created
+secret/agentshield-envelope-llm-key-513242da0b annotated
+configmap/agentshield-expected created
+Waiting for deployment "test-agentshield-broker" rollout to finish: 0 of 1 updated replicas are available...
+deployment "test-agentshield-broker" successfully rolled out
+deployment "test-agentshield-operator" successfully rolled out
+job.batch/agentshield-authorized created
+job.batch/agentshield-denied created
+job.batch/agentshield-authorized condition met
+job.batch/agentshield-denied condition met
+verified generation delivery sha256=7cafb8281819393e987d7c13f8af77d62941fce8d899dab912c26faf0f6e56dc
+verified unauthorized workload denial status=403
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on https://0.0.0.0:8443 (Press CTRL+C to quit)
+INFO:     10.244.0.8:35080 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.7:41064 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 403 Forbidden
+INFO:     10.244.0.8:48160 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.8:48172 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.8:45568 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.8:45578 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.8:58224 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     10.244.0.8:58230 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+Deleting cluster "agentshield-evidence" ...
+Deleted nodes: ["agentshield-evidence-control-plane"]

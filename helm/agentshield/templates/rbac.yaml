@@ -1,0 +1,58 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "agentshield.fullname" . }}-operator
+rules:
+  - apiGroups: ["agentshield.io"]
+    resources: ["agentsecrets", "agentsecrets/status", "agentsecrets/finalizers"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "agentshield.fullname" . }}-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "agentshield.fullname" . }}-operator
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "agentshield.fullname" . }}-operator
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "agentshield.fullname" . }}-broker
+rules:
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  - apiGroups: ["agentshield.io"]
+    resources: ["agentsecrets"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods", "secrets"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "agentshield.fullname" . }}-broker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "agentshield.fullname" . }}-broker
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "agentshield.fullname" . }}-broker
+    namespace: {{ .Release.Namespace }}

@@ -1,0 +1,10 @@
+schema_version: 1
+project: redacted-gcp-project
+resources: []
+verification:
+  last_checked_at_utc: "2026-09-18T20:29:24Z"
+  status: clean
+  notes: >-
+    No GCP resources created. The temporary OCI kind cluster was deleted and
+    kind reported no remaining clusters. OCI validation files remain only under
+    /tmp/agentshield-validation pending final evidence verification.
