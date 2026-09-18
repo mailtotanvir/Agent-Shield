@@ -38,19 +38,21 @@ jobs:
           --set runtime.kmsProvider=fake
           --set runtime.fakeKmsSecretName=fake-kms
           > /tmp/agentshield-rendered.yaml
-      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: .
-          scanners: vuln,misconfig,secret
-          # Dependencies are audited from uv.lock; scanning the hydrated .venv
-          # duplicates that result and also includes build-tool packages.
-          skip-dirs: helm/agentshield,.venv,.cache
-          severity: HIGH,CRITICAL
-          exit-code: "1"
-      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
-        with:
-          scan-type: config
-          scan-ref: /tmp/agentshield-rendered.yaml
-          severity: HIGH,CRITICAL
-          exit-code: "1"
+      - name: Trivy source scan
+        run: |
+          mkdir -p "$RUNNER_TEMP/trivy-cache"
+          docker run --rm \
+            -v "$PWD:/src:ro" \
+            -v "$RUNNER_TEMP/trivy-cache:/root/.cache/" \
+            aquasec/trivy@sha256:a22415a38938a56c379387a8163fcb0ce38b10ace73e593475d3658d578b2436 \
+            fs --scanners vuln,misconfig,secret \
+            --skip-dirs helm/agentshield,.venv,.cache \
+            --severity HIGH,CRITICAL --exit-code 1 /src
+      - name: Trivy rendered Kubernetes scan
+        run: |
+          docker run --rm \
+            -v /tmp/agentshield-rendered.yaml:/rendered.yaml:ro \
+            -v "$RUNNER_TEMP/trivy-cache:/root/.cache/" \
+            aquasec/trivy@sha256:a22415a38938a56c379387a8163fcb0ce38b10ace73e593475d3658d578b2436 \
+            config --skip-check-update \
+            --severity HIGH,CRITICAL --exit-code 1 /rendered.yaml
