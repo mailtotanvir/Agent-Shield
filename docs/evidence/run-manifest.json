@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "run_id": "oci-20260918",
-  "source_commit": null,
-  "source_commit_note": "workspace has not yet been committed",
+  "source_commit": "4a136c339e1aa1132c28aa3ebc227f485f068c15",
+  "source_commit_note": "The tested source tree was captured in the initial implementation commit; this manifest update follows it.",
   "started_at_utc": "2026-09-18T20:27:00Z",
   "finished_at_utc": "2026-09-18T20:29:24Z",
   "host": {"provider": "OCI", "architecture": "arm64", "cpu_count": 4, "memory_gib": 23},
