@@ -57,7 +57,7 @@ resources:
       API itself has no usage charge; retry disable after Google removes the stale
       inventory record.
 verification:
-  last_checked_at_utc: "2026-09-19T03:58:00Z"
+  last_checked_at_utc: "2026-09-19T04:26:00Z"
   status: paused_cost_safe_with_nonbillable_residuals
   notes: >-
     Read-only verification found no GKE cluster, Compute Engine VM, disk, external
@@ -89,6 +89,25 @@ gcp_r3_lifecycle:
   cluster_create_to_delete_hours: 0.215
   cloud_build_seconds: 44.7
   estimated_gross_usd: 0.0600
+  status: torn_down_cost_safe_with_nonbillable_residuals
+  verified_absent:
+    - GKE clusters
+    - Compute Engine instances
+    - persistent disks
+    - external addresses
+    - Artifact Registry repository
+    - Cloud Build source bucket
+    - temporary service accounts
+  residuals:
+    - KMS key-ring and CryptoKey metadata
+    - KMS key version scheduled for destruction on 2026-10-19
+    - Container API enabled because deleted node-pool asset records remain stale
+gcp_r4_lifecycle:
+  cluster: agentshield-evidence-r4
+  total_lifecycle_hours: 0.224
+  cluster_create_to_delete_hours: 0.189
+  cloud_build_seconds: 49.7
+  estimated_gross_usd: 0.0540
   status: torn_down_cost_safe_with_nonbillable_residuals
   verified_absent:
     - GKE clusters

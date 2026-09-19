@@ -1,6 +1,6 @@
 # AgentShield Implementation and Evidence Plan
 
-Status: implementation active; OCI validation passed; first GCP run torn down
+Status: implementation active; OCI validation passed; GCP r4 diagnosed and torn down
 Project: `redacted-gcp-project`  
 Repository: <https://github.com/mailtotanvir/Agent-Shield>  
 Prepared: 2026-09-18  

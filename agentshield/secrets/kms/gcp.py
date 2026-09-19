@@ -79,11 +79,9 @@ class GCPKMSProvider:
                     "additional_authenticated_data_crc32c": aad_crc,
                 }
             )
-            if (
-                not response.verified_ciphertext_crc32c
-                or not response.verified_additional_authenticated_data_crc32c
-            ):
-                raise EnvelopeError("Cloud KMS rejected request integrity checks")
+            # Unlike EncryptResponse, DecryptResponse has no `verified_*`
+            # request fields. KMS rejects request checksum mismatches and
+            # returns only the plaintext checksum for client-side validation.
             plaintext = bytes(response.plaintext)
             if _crc32c(plaintext) != response.plaintext_crc32c:
                 raise EnvelopeError("Cloud KMS plaintext integrity check failed")

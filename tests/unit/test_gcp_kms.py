@@ -21,8 +21,6 @@ class KMSClient:
     async def decrypt(self, request: dict[str, object]) -> object:
         value = b"d" * 32
         return SimpleNamespace(
-            verified_ciphertext_crc32c=True,
-            verified_additional_authenticated_data_crc32c=True,
             plaintext=value,
             plaintext_crc32c=_crc32c(value),
         )
