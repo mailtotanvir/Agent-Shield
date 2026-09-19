@@ -1,6 +1,6 @@
 # GCP Evidence Rerun Approval Request
 
-Status: awaiting explicit approval
+Status: approved and executed; stopped after bounded diagnostic attempts
 
 ## Purpose and boundary
 
@@ -79,3 +79,14 @@ record with no backing compute.
 
 Approval phrase:
 `Approve the bounded GCP r2 lifecycle in docs/evidence/gcp-rerun-approval-request.md`
+
+## Outcome
+
+The approved lifecycle was executed and stopped within its time and cost caps.
+It proved image build/pinning, broker and operator rollout, CRD acceptance,
+Workload Identity encryption, and unauthorized-request denial. The complete
+authorized path did not pass: the one-node `e2-medium` cluster's Calico/Typha
+components were not consistently ready because of CPU pressure, and workload
+connections to the Kubernetes API service IP timed out. All billable resources
+were deleted. See `gcp-r2-summary.md` for measured details and the next bounded
+recommendation.

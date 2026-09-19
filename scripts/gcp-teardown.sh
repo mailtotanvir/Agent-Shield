@@ -77,7 +77,7 @@ for account in "${SERVICE_ACCOUNTS[@]}"; do
           --role=roles/cloudkms.cryptoKeyDecrypter --quiet >/dev/null 2>&1 || true
         gcloud iam service-accounts remove-iam-policy-binding "$account" \
           --project="$PROJECT" \
-          --member="serviceAccount:${PROJECT}.svc.id.goog[agentshield-system/agentshield-broker]" \
+          --member="serviceAccount:${PROJECT}.svc.id.goog[agentshield-system/evidence-agentshield-broker]" \
           --role=roles/iam.workloadIdentityUser --quiet >/dev/null 2>&1 || true
         ;;
       "agentshield-ingest@${PROJECT}.iam.gserviceaccount.com")
@@ -120,7 +120,7 @@ if [[ -n "$project_number" ]]; then
 fi
 
 if [[ "${AGENTSHIELD_DISABLE_APIS:-false}" == "true" ]]; then
-  for api in container.googleapis.com cloudkms.googleapis.com file.googleapis.com networkconnectivity.googleapis.com; do
+  for api in cloudkms.googleapis.com file.googleapis.com networkconnectivity.googleapis.com container.googleapis.com; do
     run_delete "API ${api}" \
       gcloud services disable "$api" --project="$PROJECT" --quiet
   done

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import logging
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -25,6 +26,8 @@ from agentshield.secrets.kubernetes import (
     SecretReader,
     TokenReviewer,
 )
+
+logger = logging.getLogger("uvicorn.error")
 
 
 class SecretBroker:
@@ -77,6 +80,12 @@ class SecretBroker:
                     ),
                     resource=resource,
                 )
+            )
+            logger.warning(
+                "secret delivery failed: code=%s reason=%s resource=%s",
+                exc.code,
+                str(exc),
+                resource,
             )
             raise
 
