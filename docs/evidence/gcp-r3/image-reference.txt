@@ -1,0 +1,1 @@
+northamerica-northeast1-docker.pkg.dev/redacted-gcp-project/agentshield-evidence-r3/agentshield@sha256:2c851596fec5cbb98c3aa774e31f5bebcf55f6f3032e552e2d8affcabd28f9bd

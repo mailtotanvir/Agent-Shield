@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
+from google.api_core.exceptions import PermissionDenied
 
 from agentshield.errors import EnvelopeError
 from agentshield.secrets.kms.gcp import GCPKMSProvider, _crc32c
@@ -51,3 +52,20 @@ async def test_gcp_kms_rejects_failed_integrity_flag() -> None:
     )
     with pytest.raises(EnvelopeError, match="integrity"):
         await provider.wrap_key(b"d" * 32, b"aad")
+
+
+class DeniedKMSClient(KMSClient):
+    async def decrypt(self, request: dict[str, object]) -> object:
+        raise PermissionDenied("sensitive provider details")
+
+
+@pytest.mark.asyncio
+async def test_gcp_kms_reports_only_bounded_failure_classification() -> None:
+    provider = GCPKMSProvider(
+        "projects/p/locations/l/keyRings/r/cryptoKeys/k",
+        client=DeniedKMSClient(),  # type: ignore[arg-type]
+    )
+    with pytest.raises(EnvelopeError, match=r"Cloud KMS decrypt failed \(PermissionDenied\)") \
+        as captured:
+        await provider.unwrap_key(b"wrapped", b"aad")
+    assert "sensitive provider details" not in str(captured.value)

@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import google_crc32c
+from google.api_core.exceptions import GoogleAPICallError
 from google.cloud import kms
 
 from agentshield.errors import EnvelopeError
@@ -14,6 +15,13 @@ def _crc32c(value: bytes) -> int:
     checksum = google_crc32c.Checksum()  # type: ignore[no-untyped-call]
     checksum.update(value)  # type: ignore[no-untyped-call]
     return int(checksum.hexdigest(), 16)  # type: ignore[no-untyped-call]
+
+
+def _failure_reason(exc: Exception) -> str:
+    """Return a bounded diagnostic without serializing request data."""
+    if isinstance(exc, GoogleAPICallError):
+        return type(exc).__name__
+    return type(exc).__name__
 
 
 class GCPKMSProvider:
@@ -55,7 +63,7 @@ class GCPKMSProvider:
         except EnvelopeError:
             raise
         except Exception as exc:
-            raise EnvelopeError("Cloud KMS encrypt failed") from exc
+            raise EnvelopeError(f"Cloud KMS encrypt failed ({_failure_reason(exc)})") from exc
 
     async def unwrap_key(self, wrapped_dek: bytes, context: bytes) -> bytes:
         ciphertext_crc = _crc32c(wrapped_dek)
@@ -83,4 +91,4 @@ class GCPKMSProvider:
         except EnvelopeError:
             raise
         except Exception as exc:
-            raise EnvelopeError("Cloud KMS decrypt failed") from exc
+            raise EnvelopeError(f"Cloud KMS decrypt failed ({_failure_reason(exc)})") from exc
