@@ -1,6 +1,9 @@
-# GCP One-shot Lifecycle Approval Request
+# GCP One-shot Lifecycle Approval Record
 
-This is a proposal, not authorization. Nothing in this document has been run.
+Historical status: approved and executed on 2026-09-18, then stopped and torn
+down at the user's request. The intended conformance checks did not complete;
+see `resource-inventory.yaml` for the verified residual state. The text below is
+preserved as the original approval boundary, not as current authorization.
 
 ## Boundaries
 

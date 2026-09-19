@@ -8,8 +8,8 @@ set -uo pipefail
 readonly PROJECT="redacted-gcp-project"
 readonly REGION="northamerica-northeast1"
 readonly ZONE="northamerica-northeast1-a"
-readonly CLUSTER="agentshield-evidence"
-readonly REPOSITORY="agentshield-evidence"
+readonly CLUSTER="agentshield-evidence-r2"
+readonly REPOSITORY="agentshield-evidence-r2"
 readonly KEYRING="agentshield-evidence"
 readonly KEY="envelope"
 readonly SOURCE_BUCKET_PREFIX="gs://agentshield-evidence-source-"
@@ -144,7 +144,7 @@ gcloud kms keys versions list --key="$KEY" --keyring="$KEYRING" \
   --location="$REGION" --project="$PROJECT" \
   --format='table(name,state,destroyTime)' 2>/dev/null || true
 gcloud asset search-all-resources --scope="projects/${PROJECT}" \
-  --query="${CLUSTER}" --format='table(assetType,name,state)' 2>/dev/null || true
+  --query="agentshield-evidence" --format='table(assetType,name,state)' 2>/dev/null || true
 gcloud services list --enabled --project="$PROJECT" \
   --filter='config.name:(container.googleapis.com OR cloudkms.googleapis.com OR file.googleapis.com OR networkconnectivity.googleapis.com)' \
   --format='table(config.name)' 2>/dev/null || true

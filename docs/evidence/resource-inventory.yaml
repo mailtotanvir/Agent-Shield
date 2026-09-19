@@ -57,10 +57,11 @@ resources:
       API itself has no usage charge; retry disable after Google removes the stale
       inventory record.
 verification:
-  last_checked_at_utc: "2026-09-18T22:59:28Z"
+  last_checked_at_utc: "2026-09-19T02:08:00Z"
   status: paused_cost_safe_with_nonbillable_residuals
   notes: >-
     Read-only verification found no GKE cluster, Compute Engine VM, disk, external
     address, AgentShield Artifact Registry, service account, build object, or
-    staging bucket. Remaining Cloud Asset entries are KMS metadata/version pending
-    destruction and a stale GKE node-pool record with no backing compute.
+    staging bucket. A second read-only inventory confirmed the same state.
+    Remaining Cloud Asset entries are KMS metadata/version pending destruction
+    and a stale GKE node-pool record with no backing compute.
