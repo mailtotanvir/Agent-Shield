@@ -1,6 +1,6 @@
 # AgentShield Implementation and Evidence Plan
 
-Status: implementation active; OCI validation passed; GCP approval gate pending  
+Status: implementation active; OCI validation passed; first GCP run torn down
 Project: `redacted-gcp-project`  
 Repository: <https://github.com/mailtotanvir/Agent-Shield>  
 Prepared: 2026-09-18  
@@ -9,8 +9,8 @@ Cost incurred while preparing this plan: **$0.00**
 
 ## 1. Objective
 
-Build the production-oriented Python library and Kubernetes operator described in
-`agentshield-spec.md`, validate portable Kubernetes behavior on the existing OCI
+Build the security-focused Python library and Kubernetes operator defined in
+`design.md`, validate portable Kubernetes behavior on the existing OCI
 instance, then run only the smallest necessary GCP
 experiment to prove GKE Workload Identity and Cloud KMS integration. Preserve a
 reproducible evidence packet suitable for an article in
@@ -61,7 +61,9 @@ copied and verified.
 5. DPoP is implemented first and fails closed for policy-labelled sensitive
    scopes and actions; and
 6. refresh-token persistence is optional and uses a minimal KMS-encrypted Redis
-   vault with atomic rotation and token-family reuse response.
+   vault with atomic rotation and token-family reuse response; and
+7. Temporal optionally coordinates durable secret rotation using reference-only
+   workflow history, idempotent activities, verification, and compensation.
 
 ## 4. Delivery strategy
 
@@ -198,6 +200,14 @@ Only after the lifecycle packet is approved:
 8. Stop the experiment if the time/spend ceiling, unexpected resource creation,
    or security invariant is breached.
 
+Before creating any resource, validate `scripts/gcp-teardown.sh` and keep its
+exact invocation in the run transcript. All experiment resources use its fixed
+names. Teardown is one idempotent command followed by read-only GKE, Compute,
+Artifact Registry, IAM, KMS, Cloud Asset, enabled-API, and billing verification.
+API disablement is opt-in because APIs that predated a run must not be disabled.
+The teardown script's nonzero exit is a prompt for manual cleanup, not permission
+to broaden deletion targets.
+
 ### Stage 4 — Authorization bus (validation on OCI, $0 incremental)
 
 - Implement the RFC 8693 client/policy boundary, provider-native actor-claim
@@ -289,7 +299,7 @@ hero section, the problem and architecture, a concrete failure or uncomfortable
 result, evidence-backed fixes, a concise results table, cost and teardown facts,
 what changed during implementation, limitations, code/evidence links, and a clear
 lesson. Each security post also needs working code, “what goes wrong,” and “what
-to check in review” sections as required by the spec.
+to check in review” sections as required by the design.
 
 Do not manufacture a clean narrative. A failed control or revised design is
 valuable evidence if the original result and correction are preserved.
@@ -333,7 +343,7 @@ The project is complete only when:
 Terra should treat this as one continuous implementation run, keeping builds and
 tests off Tanvir's laptop:
 
-1. Re-read `agentshield-spec.md` and this plan; echo the GCP authority boundary in
+1. Re-read `design.md` and this plan; echo the GCP authority boundary in
    the work log.
 2. Inventory the local repository, initialize/scaffold it, and configure
    `git@github.com:mailtotanvir/Agent-Shield.git` as `origin` without touching

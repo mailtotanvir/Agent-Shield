@@ -1,21 +1,22 @@
 # AgentShield Design
 
-Status: accepted for initial implementation  
+Status: accepted redesign for prototype completion
 Date: 2026-09-18  
 Repository: <https://github.com/mailtotanvir/Agent-Shield>  
 Authority: this document resolves the open design questions in
-`IMPLEMENTATION_PLAN.md`. Where it narrows the original specification, this
-document controls the initial implementation.
+`IMPLEMENTATION_PLAN.md` and is the authoritative product and security design.
 
 ## 1. Product boundary
 
-AgentShield is a security toolkit for **client agents**. It has three runtime
+AgentShield is a security toolkit for **client agents**. It has four runtime
 roles:
 
 1. an OAuth/OIDC client and strict token/session validation library;
 2. a policy layer around externally issued tokens and RFC 8693 token exchange;
 3. a Kubernetes operator and authenticated broker that delivers KMS-protected
-   secrets to authorized agent pods without storing plaintext in etcd.
+   secrets to authorized agent pods without storing plaintext in etcd; and
+4. an optional Temporal worker that durably coordinates secret rotation across
+   credential providers, KMS, Kubernetes, verification, and revocation.
 
 AgentShield is not an identity provider, general authorization server, service
 mesh, or full secrets platform. The configured identity provider remains the
@@ -27,6 +28,9 @@ receive an authorized secret in Kubernetes, rotate both safely, and leave a
 redacted audit trail. Positive and denied paths must be demonstrated on a disposable
 cluster and the GKE-specific identity/KMS path on GKE when approved.
 
+The prototype does not need production availability. Documentation must clearly
+separate demonstrated behavior from the production-hardening backlog.
+
 ## 2. Component model
 
 ```text
@@ -37,6 +41,13 @@ AgentShield identity + session library ─── Redis token/replay state
        │ validated TokenSet / policy decision
        ▼
 Client agent
+
+Temporal rotation workflow (optional control plane)
+       │ opaque references, versions, digests, policy; never plaintext
+       ├── credential-provider activity
+       ├── envelope/KMS activity
+       ├── delivery-verification activity
+       └── old-credential revocation + redacted audit
 
 Agent pod (bound ServiceAccount token)
        │ TLS + authenticated secret request
@@ -57,6 +68,8 @@ The Kopf controller and secret broker may share a deployment and codebase, but
 they have separate Kubernetes service accounts and permissions. Compromise of
 the reconciler must not automatically grant permission to authenticate workload
 requests, and the broker receives only the KMS and read permissions it needs.
+The Temporal worker is a separate deployment and identity. Installing it is
+optional; the broker and manual rotation path remain usable without Temporal.
 
 ## 3. ADR-001 — Secret delivery uses an authenticated broker and sidecar
 
@@ -330,7 +343,77 @@ class DelegationPolicy(Protocol):
     async def validate_result(self, subject: TokenClaims, result: TokenSet) -> TokenClaims: ...
 ```
 
-## 10. Security invariants
+## 10. ADR-007 — Temporal coordinates durable secret rotation
+
+### Decision
+
+Use Temporal only for long-running, cross-system secret lifecycle operations.
+The first workflow is `RotateAgentSecret`; it does not replace Kubernetes
+reconciliation, KMS, the broker, or request-path token validation.
+
+The workflow carries only opaque resource references, generation numbers,
+policy identifiers, idempotency keys, ciphertext-envelope references, ciphertext
+digests, and opaque verification receipts. Temporal persists workflow inputs, activity inputs/results, events,
+memo, search attributes, and failures in history. Therefore plaintext secrets,
+OAuth tokens, private keys, authorization headers, and unredacted provider
+errors are forbidden from every Temporal payload and exception.
+
+The workflow is:
+
+1. wait for a schedule or receive an explicit rotation request;
+2. reserve the next generation using an idempotency key;
+3. ask a provider activity to create or rotate the credential, returning only
+   an opaque one-use credential reference;
+4. ask an envelope activity to redeem that reference inside the worker, encrypt
+   the value with a fresh DEK, wrap the DEK with KMS, publish ciphertext, clear
+   replaceable buffers, and return only the envelope generation and a digest of
+   the ciphertext envelope (never a digest of plaintext);
+5. ask a verification activity to compare the delivered value inside the
+   activity and return only an opaque verification receipt;
+6. promote the generation and revoke the previous provider credential; and
+7. emit a redacted terminal audit event.
+
+Activities must be idempotent at their external boundary. Retry policies are
+bounded and distinguish transient failures from policy, authentication, and
+cryptographic failures. Provider creation records a recoverable opaque handle
+before returning. If verification fails, compensation disables the candidate
+credential and preserves the previous active generation. If promotion succeeds
+but old-credential revocation is unavailable, the workflow remains visibly
+incomplete and retries revocation; it must not report full success.
+
+Temporal workflow code must be deterministic. Network, clock, randomness, KMS,
+Kubernetes, and provider operations occur only in activities. Workflow and
+activity versioning must support replay of histories produced by the previous
+deployed worker version.
+
+The prototype uses the Temporal Python SDK and deterministic fake provider/KMS
+activities in OCI tests. Acceptance evidence must show retry, restart/replay,
+compensation, idempotency, and a history scan proving a generated canary does not
+occur. Temporal Cloud or a production Temporal cluster is not required.
+
+### Security and operational boundary
+
+- The worker has a dedicated identity with only the specific provider, KMS
+  encrypt, and ciphertext-write permissions required by its activities.
+- The workflow never receives KMS plaintext output or broker-delivered values.
+- A payload codec may add defense in depth, but does not justify putting
+  plaintext in history.
+- Temporal does not orchestrate per-request JWT validation, DPoP validation, or
+  broker authorization because those are latency-sensitive fail-closed paths.
+- Temporal does not replace the Kopf controller's convergence semantics.
+- Infrastructure provisioning and teardown are outside this workflow. In
+  particular, it cannot create GCP resources without the separately documented
+  human approval boundary.
+
+### Production-hardening backlog
+
+Production adoption requires authenticated TLS between clients/workers and the
+Temporal service, namespace isolation, worker workload identity, payload-codec
+key management, HA and disaster recovery, retention and history-size policy,
+worker build IDs and replay gates, activity heartbeats, alerting, rate limits,
+and tested operator procedures for stuck or partially compensated workflows.
+
+## 11. Security invariants
 
 - Unverified claims never influence key selection, network destinations,
   authorization, logging identity, or cache partitioning.
@@ -344,8 +427,10 @@ class DelegationPolicy(Protocol):
   limits, bounded retries with jitter, and overload protection.
 - Production profiles reject development KMS, issuer, token-vault, and TLS modes.
 - Audit events record allow/deny reason codes without sensitive values.
+- Durable-workflow histories contain references and digests only, never secret
+  plaintext or bearer credentials.
 
-## 11. Implementation slices and acceptance tests
+## 12. Implementation slices and acceptance tests
 
 1. **Foundation:** typed models, errors, configuration profiles, redaction, audit
    schema, local test issuer, and CI/security tooling.
@@ -357,7 +442,9 @@ class DelegationPolicy(Protocol):
    hash-chained audit records with an optional immutable sink.
 5. **Secrets:** CRD/envelope, GCP KMS, reconciler, broker, TokenReview/pod policy,
    sidecar/tmpfs delivery, rotation, and cleanup.
-6. **Evidence:** kind on OCI, then approved GKE Workload
+6. **Durable rotation:** optional Temporal workflow, idempotent fake activities,
+   retry/compensation/replay tests, and history canary scan on OCI.
+7. **Evidence:** kind on OCI, then approved GKE Workload
    Identity/KMS validation, priced evidence, and teardown.
 
 Negative tests cover algorithm confusion, issuer/audience mismatch,
@@ -367,7 +454,7 @@ exchange escalation, cross-namespace access, token audience failure, pod
 UID/selector mismatch, ciphertext/AAD tampering, KMS denial/outage, interrupted
 rotation, broker overload, and pod deletion cleanup.
 
-## 12. Deferred work
+## 13. Deferred work
 
 - AgentShield-owned authorization server or token issuer;
 - mTLS-bound OAuth tokens;
@@ -376,6 +463,7 @@ rotation, broker overload, and pod deletion cleanup.
 - production AWS KMS, Azure Key Vault, and Vault adapters beyond interfaces and
   contract tests;
 - multi-cluster high availability and formal compliance certification.
+- production Temporal service operation and automated infrastructure lifecycle.
 
 The initial README, packages, diagrams, and blog must not imply deferred
 capabilities are implemented.

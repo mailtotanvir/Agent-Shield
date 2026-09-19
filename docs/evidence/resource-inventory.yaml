@@ -1,10 +1,66 @@
 schema_version: 1
 project: redacted-gcp-project
-resources: []
+approved_lifecycle:
+  started_at_utc: "2026-09-18T21:06:40Z"
+  teardown_requested_at_utc: "2026-09-18T21:25:00Z"
+  gke_delete_completed_at_utc: "2026-09-18T21:29:15Z"
+  gross_cost_cap_usd: 2.00
+resources:
+  - kind: gke-cluster
+    id: agentshield-evidence
+    created_at_utc: "2026-09-18T21:09:45Z"
+    deleted_at_utc: "2026-09-18T21:29:15Z"
+    status: deleted_verified
+  - kind: artifact-registry
+    id: projects/redacted-gcp-project/locations/northamerica-northeast1/repositories/agentshield-evidence
+    created_at_utc: "2026-09-18T21:06:54Z"
+    deleted_at_utc: "2026-09-18T21:25:00Z"
+    status: deleted_verified
+  - kind: cloud-build
+    id: 56088d98-a9f2-40c1-a6ef-8a7df85c4f0e
+    created_at_utc: "2026-09-18T21:08:46Z"
+    finished_at_utc: "2026-09-18T21:09:26Z"
+    status: completed
+  - kind: cloud-build-source-object
+    id: gs://redacted-gcp-project_cloudbuild/source/1789765724.354763-f0fce7a9ddd141ae92b4feff9a65cc10.tgz
+    status: deleted_verified
+  - kind: cloud-build-staging-bucket
+    id: gs://redacted-gcp-project_cloudbuild
+    created_at_utc: "2026-09-18T21:08:45Z"
+    status: deleted_verified
+  - kind: kms-key-version
+    id: projects/redacted-gcp-project/locations/northamerica-northeast1/keyRings/agentshield-evidence/cryptoKeys/envelope/cryptoKeyVersions/1
+    created_at_utc: "2026-09-18T21:07:00Z"
+    destroy_requested_at_utc: "2026-09-18T21:25:33Z"
+    scheduled_destroy_at_utc: "2026-10-18T21:25:33Z"
+    status: destroy_scheduled
+    residual: Non-deletable key-ring and CryptoKey metadata; scheduled versions are not usable.
+  - kind: service-accounts-and-bindings
+    ids:
+      - agentshield-gke-node@redacted-gcp-project.iam.gserviceaccount.com
+      - agentshield-broker@redacted-gcp-project.iam.gserviceaccount.com
+      - agentshield-ingest@redacted-gcp-project.iam.gserviceaccount.com
+    status: deleted_verified
+  - kind: service-apis
+    ids:
+      - cloudkms.googleapis.com
+      - file.googleapis.com
+      - networkconnectivity.googleapis.com
+    status: disabled_verified
+  - kind: service-api
+    id: container.googleapis.com
+    status: enabled_pending_google_cleanup
+    notes: >-
+      The cluster DELETE operation completed and no cluster, VM, disk, address,
+      repository, or service account remains. Service Usage refuses disable while
+      Cloud Asset retains the deleted default node pool in STOPPING. The enabled
+      API itself has no usage charge; retry disable after Google removes the stale
+      inventory record.
 verification:
-  last_checked_at_utc: "2026-09-18T20:29:24Z"
-  status: clean
+  last_checked_at_utc: "2026-09-18T22:59:28Z"
+  status: paused_cost_safe_with_nonbillable_residuals
   notes: >-
-    No GCP resources created. The temporary OCI kind cluster was deleted and
-    kind reported no remaining clusters. OCI validation files remain only under
-    /tmp/agentshield-validation pending final evidence verification.
+    Read-only verification found no GKE cluster, Compute Engine VM, disk, external
+    address, AgentShield Artifact Registry, service account, build object, or
+    staging bucket. Remaining Cloud Asset entries are KMS metadata/version pending
+    destruction and a stale GKE node-pool record with no backing compute.
