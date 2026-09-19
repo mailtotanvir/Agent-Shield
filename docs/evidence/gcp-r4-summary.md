@@ -12,7 +12,7 @@ Region/zone: `northamerica-northeast1` / `northamerica-northeast1-a`
 - An application pod reached the Kubernetes API service.
 - The broker and operator became available.
 - The broker resolved to the intended
-  `agentshield-broker@redacted-gcp-project.iam.gserviceaccount.com` identity.
+  `[redacted-broker-service-account]` identity.
 - Workload Identity-backed KMS encryption completed and the encrypted envelope
   reported generation 1.
 - The unauthorized workload received HTTP 403.

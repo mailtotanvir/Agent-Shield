@@ -1,7 +1,7 @@
 # OCI Validation Evidence
 
 Date: 2026-09-18  
-GCP project reserved for later validation: `redacted-gcp-project`  
+GCP project reserved for later validation: `redacted-gcp-project`
 GCP resources created: none  
 Incremental OCI resources created: none  
 Recorded incremental cloud cost: **$0.00**

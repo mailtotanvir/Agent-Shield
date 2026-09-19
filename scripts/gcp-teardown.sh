@@ -5,7 +5,7 @@ set -uo pipefail
 # This script intentionally uses exact resource names and project flags. It may
 # be rerun after partial failure. It never deletes unrelated project resources.
 
-readonly PROJECT="redacted-gcp-project"
+readonly PROJECT="${AGENTSHIELD_GCP_PROJECT:?Set AGENTSHIELD_GCP_PROJECT to the approved GCP project ID}"
 readonly REGION="northamerica-northeast1"
 readonly ZONE="northamerica-northeast1-a"
 readonly CLUSTER="agentshield-evidence-r6"

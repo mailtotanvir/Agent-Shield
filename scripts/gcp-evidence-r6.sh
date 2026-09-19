@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readonly PROJECT="redacted-gcp-project"
+readonly PROJECT="${AGENTSHIELD_GCP_PROJECT:?Set AGENTSHIELD_GCP_PROJECT to the approved GCP project ID}"
 readonly REGION="northamerica-northeast1"
 readonly ZONE="northamerica-northeast1-a"
 readonly CLUSTER="agentshield-evidence-r6"

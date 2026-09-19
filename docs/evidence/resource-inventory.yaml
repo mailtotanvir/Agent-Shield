@@ -37,9 +37,9 @@ resources:
     residual: Non-deletable key-ring and CryptoKey metadata; scheduled versions are not usable.
   - kind: service-accounts-and-bindings
     ids:
-      - agentshield-gke-node@redacted-gcp-project.iam.gserviceaccount.com
-      - agentshield-broker@redacted-gcp-project.iam.gserviceaccount.com
-      - agentshield-ingest@redacted-gcp-project.iam.gserviceaccount.com
+      - [redacted-node-service-account]
+      - [redacted-broker-service-account]
+      - [redacted-ingest-service-account]
     status: deleted_verified
   - kind: service-apis
     ids:

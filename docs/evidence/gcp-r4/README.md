@@ -6,7 +6,7 @@ Google support token. No plaintext secret or bearer token is retained.
 
 ```text
 in-cluster Kubernetes API connectivity verified
-broker identity: agentshield-broker@redacted-gcp-project.iam.gserviceaccount.com
+broker identity: [redacted-broker-service-account]
 EXPECTED_SHA256=f9c922a279b890c091f09aa0faf2b3a9d0af554c252aa7efae36d84f9695953b
 GENERATION=1
 unauthorized request denied with HTTP 403

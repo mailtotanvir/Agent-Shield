@@ -1,7 +1,7 @@
 # AgentShield Implementation and Evidence Plan
 
 Status: implementation active; OCI validation and core GKE/KMS delivery evidence passed; GCP r6 torn down
-Project: `redacted-gcp-project`  
+Project: `redacted-gcp-project`
 Repository: <https://github.com/mailtotanvir/Agent-Shield>  
 Prepared: 2026-09-18  
 Cloud resources created while preparing this plan: none  

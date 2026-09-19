@@ -44,7 +44,8 @@ prototype.
 The teardown command is:
 
 ```bash
-AGENTSHIELD_CONFIRM_PROJECT=redacted-gcp-project \
+AGENTSHIELD_GCP_PROJECT=your-project-id \
+AGENTSHIELD_CONFIRM_PROJECT=your-project-id \
 AGENTSHIELD_DISABLE_APIS=true \
 scripts/gcp-teardown.sh
 ```

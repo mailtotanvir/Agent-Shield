@@ -196,14 +196,8 @@ verified unauthorized workload denial status=403
 INFO:     Started server process [1]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on https://0.0.0.0:8443 (Press CTRL+C to quit)
-INFO:     10.244.0.7:49828 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 403 Forbidden
-INFO:     10.244.0.8:47738 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:47750 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:46268 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:46280 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:32864 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:32872 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
-INFO:     10.244.0.8:50726 - "GET /v1/secrets/agents/llm-key HTTP/1.1" 200 OK
+INFO:     broker listening on configured HTTPS port [address redacted]
+INFO:     unauthorized secret request returned 403 Forbidden [pod address redacted]
+INFO:     authorized secret requests returned 200 OK [pod addresses redacted]
 Deleting cluster "agentshield-evidence" ...
 Deleted nodes: ["agentshield-evidence-control-plane"]

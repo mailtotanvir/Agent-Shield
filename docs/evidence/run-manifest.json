@@ -1,25 +1,65 @@
 {
-  "schema_version": 1,
-  "run_id": "oci-20260918",
-  "source_commit": "e0efe687b3f4e57479c24a13027ac8320100bffb",
-  "source_commit_note": "The tested source and hardened RBAC are captured in this commit; this manifest-only update follows it.",
-  "started_at_utc": "2026-09-18T20:27:00Z",
-  "finished_at_utc": "2026-09-18T20:54:12Z",
-  "host": {"provider": "OCI", "architecture": "arm64", "cpu_count": 4, "memory_gib": 23},
-  "tool_versions": {"python": "3.12.3", "uv": "0.11.17", "docker": "29.4.3", "kind": "0.33.0", "kubernetes": "1.37.0", "helm": "4.3.0"},
-  "uv_lock_sha256": "8ccb1b2f47c6b4cab90c464f1aa1045e0998d7cca430d0aacf90f023a67047d5",
-  "image": {"reference": "agentshield:local", "digest": "sha256:d4c9a78093632e5fd64d124a73b50f111c6f6abfcca63312cadd86ce50ebc547", "architecture": "arm64", "size_bytes": 67866931},
-  "results": {"tests_passed": 43, "coverage_percent": 72.31, "authorized_delivery": "pass", "unauthorized_delivery": "denied_http_403", "cluster_teardown": "verified"},
-  "artifacts_sha256": {
-    "oci/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
-    "oci/mypy.log": "32c1f154f636757bc9df6843701b18b495673a7cf2e0f68b592d2055d6ae6c07",
-    "oci/pytest.log": "b6b02d56b68848113ffc2f5c54d406c5864bb25230d8141672a72c7de0a51185",
-    "oci/bandit.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "oci/semgrep-output.log": "4093245f009550fa90f8a06f34a033232ea42d95e432f9e8f2c489c8b2cb52de",
-    "oci/pip-audit.log": "b7e92da7a826a67e14afe26d964f63cd4fe231d133ed9b2b95497734121b4ab8",
-    "oci/helm-lint.log": "488317fed394cf2f6cbc4aadbe4ab3fde91b316dfea647db016f4772456e18fa",
-    "oci/kind-smoke.log": "50a6231abb14726fa2803cd9285b2fc357c852c43325754c5c27ca05d49424e4",
-    "oci/trivy.log": "8caaebbee60c2e311f213f29b5a4a163cf6e64febb9abc7b64b5d4e0d70c7f12"
+  "schema_version": 2,
+  "publication_cut": "2026-09-19",
+  "source_commit": "6392d369a58852ed20b9fd8214d71aee371c18ca",
+  "source_commit_note": "R6 implementation and sanitized evidence baseline; publication-only edits follow locally.",
+  "dependency_lock_sha256": "62055bb009a26c6af48d8c8f24d35714f6bc3dda7941d5ad9487d2b58c3bf6a3",
+  "validation": {
+    "environment": "existing OCI ARM64 instance",
+    "incremental_cost_usd": 0.0,
+    "tests_passed": 46,
+    "branch_coverage_percent": 73.34,
+    "checks": [
+      "ruff",
+      "strict-mypy",
+      "pytest",
+      "bandit",
+      "semgrep",
+      "pip-audit",
+      "helm-lint",
+      "trivy-source",
+      "trivy-kubernetes"
+    ],
+    "temporal": [
+      "retry",
+      "compensation",
+      "idempotency",
+      "replay",
+      "plaintext-history-exclusion"
+    ]
   },
-  "cost": {"incremental_usd": 0.0, "note": "Existing OCI instance only; standing instance price not claimed as zero. No GCP resources created."}
+  "gcp_r6": {
+    "project": "redacted",
+    "region": "northamerica-northeast1",
+    "started_at_utc": "2026-09-19T05:22:15Z",
+    "billable_resources_removed_at_utc": "2026-09-19T05:34:42Z",
+    "cluster_create_to_delete_hours": 0.167,
+    "cloud_build_seconds": 46.5,
+    "image_digest": "sha256:d4c91b42d6e1dd0cf44568562674348db750d793c39929be5bc5393988a6ae8b",
+    "estimated_gross_usd": 0.047,
+    "actual_billing": "pending",
+    "results": {
+      "kubernetes_api_connectivity": "pass",
+      "workload_identity": "pass",
+      "kms_encrypted_generation": 1,
+      "authorized_delivery": "matching_sha256",
+      "unauthorized_delivery": "denied_http_403",
+      "billable_resource_teardown": "verified"
+    },
+    "limitations": [
+      "Cloud KMS Data Access audit records were unavailable",
+      "single-node evidence run",
+      "runner returned nonzero after successful functional checks because of an obsolete text assertion"
+    ]
+  },
+  "artifacts_sha256": {
+    "gcp-r6/api-connectivity.log": "43185aa08928e9974021b31e2475898ececef0b5ac98995e67160e42b1d72cea",
+    "gcp-r6/authorized.log": "96a8ef301dde41198ec53f5219bcae96df3885ed1fbd3b984a0228f598518d2e",
+    "gcp-r6/broker-identity.log": "37254cb8ea898812911bfb081e334db9f1e3375e7f65035ff6a03bcd77d0129c",
+    "gcp-r6/denied.log": "7c8e5b6d92da28ffac1a782f3ae5c905cb08a71c2dc5ffb8a468f95f27df58f3",
+    "gcp-r6/image-reference.txt": "8bd8354d63ba7407cecae80b1ea71b22b4835d2a666bda5a1fec3a706789d99c",
+    "gcp-r6/ingest.log": "425bd5d3acdd757700355ef756c5d0c2c24ecc1b4ed8def3e329c7b9ca38bd2b",
+    "gcp-r6/started-at.txt": "072072fd5395edcbee656b75b2b5953b8060908a98db9b61bd40a12dc20ef34a",
+    "gcp-r6/finished-at.txt": "42dffd55fa2ad3da0ef83607a2080304bcb3586fc5f631647d643daa256d83d9"
+  }
 }

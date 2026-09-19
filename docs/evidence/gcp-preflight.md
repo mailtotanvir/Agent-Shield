@@ -1,7 +1,7 @@
 # GCP Read-only Preflight
 
 Observed: 2026-09-18  
-Project: `redacted-gcp-project`  
+Project: `redacted-gcp-project`
 Selected zone: `northamerica-northeast1-a` (Montréal)  
 Mutations performed: none  
 Cost incurred by preflight: **$0.00**

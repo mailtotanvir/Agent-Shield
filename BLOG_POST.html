@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Missing Trust Layer for AI Agents — AgentShield</title>
+  <meta name="description" content="Building AgentShield: scoped identity, Cloud KMS envelope encryption, memory-only Kubernetes delivery, and durable secret rotation for client agents.">
+  <meta property="og:title" content="The Missing Trust Layer for AI Agents">
+  <meta property="og:description" content="A reference architecture for giving AI agents scoped authority and short-lived access without turning orchestration systems into secret stores.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://mailtotanvir.github.io/Agent-Shield/BLOG_POST.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #e9eef9;
+      --muted: #9aa8bf;
+      --bg: #080b12;
+      --panel: #101722;
+      --panel-2: #0c131e;
+      --line: #263246;
+      --mint: #5ee7b7;
+      --amber: #ffca6a;
+      --blue: #77a8ff;
+      --red: #ff7c89;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(64, 104, 178, .23), transparent 34rem),
+        radial-gradient(circle at 90% 20%, rgba(54, 181, 146, .12), transparent 30rem),
+        var(--bg);
+      font: 17px/1.75 Manrope, system-ui, sans-serif;
+    }
+    a { color: var(--mint); }
+    .shell { width: min(1120px, calc(100% - 40px)); margin: auto; }
+    nav { display: flex; justify-content: space-between; gap: 20px; padding: 24px 0; font: 600 14px IBM Plex Mono, monospace; }
+    nav a { color: var(--muted); text-decoration: none; }
+    header { padding: 90px 0 72px; max-width: 960px; }
+    .eyebrow { color: var(--mint); font: 600 13px IBM Plex Mono, monospace; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 18px 0 24px; font-size: clamp(3rem, 8vw, 6.7rem); line-height: .98; letter-spacing: -.065em; }
+    .lede { max-width: 810px; color: #c5cede; font-size: clamp(1.15rem, 2.4vw, 1.5rem); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 40px 0 0; }
+    .stat, .panel { border: 1px solid var(--line); background: rgba(16, 23, 34, .84); border-radius: 16px; }
+    .stat { padding: 20px; }
+    .stat strong { display: block; color: var(--mint); font: 700 2rem IBM Plex Mono, monospace; }
+    .stat span { color: var(--muted); font-size: .83rem; }
+    article { max-width: 860px; margin: 0 auto; padding-bottom: 100px; }
+    section { margin: 78px 0; }
+    h2 { margin: 0 0 20px; font-size: clamp(1.75rem, 4vw, 2.25rem); letter-spacing: -.035em; }
+    h3 { margin-top: 32px; }
+    p, li { color: #bcc6d7; }
+    strong { color: var(--ink); }
+    .panel { padding: 28px; }
+    .flow { overflow-x: auto; color: var(--blue); font: 500 14px/1.8 IBM Plex Mono, monospace; white-space: pre; }
+    code { color: var(--amber); font-family: IBM Plex Mono, monospace; }
+    .callout { border-left: 4px solid var(--amber); padding: 10px 0 10px 24px; }
+    .good { border-left-color: var(--mint); }
+    .danger { border-left-color: var(--red); }
+    table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+    th, td { border-bottom: 1px solid var(--line); padding: 14px 10px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font: 600 12px IBM Plex Mono, monospace; text-transform: uppercase; }
+    .steps { display: grid; gap: 12px; counter-reset: step; }
+    .step { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel-2); }
+    .step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 38px; height: 38px; color: #06120e; background: var(--mint); border-radius: 50%; font: 700 15px IBM Plex Mono, monospace; }
+    .step p { margin: 4px 0; }
+    .architecture { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 12px; align-items: stretch; }
+    .node { display: grid; place-items: center; min-height: 112px; padding: 18px; text-align: center; border: 1px solid var(--line); border-radius: 14px; background: var(--panel-2); color: #cbd5e5; }
+    .node b { color: var(--mint); display: block; }
+    .arrow { align-self: center; color: var(--amber); font: 600 22px IBM Plex Mono, monospace; }
+    .button { display: inline-block; margin: 8px 8px 0 0; padding: 11px 16px; border: 1px solid var(--mint); border-radius: 10px; color: #07110d; background: var(--mint); font-weight: 800; text-decoration: none; }
+    .button.secondary { color: var(--mint); background: transparent; }
+    footer { border-top: 1px solid var(--line); padding: 32px 0 60px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      header { padding-top: 55px; }
+      .architecture { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav><a href="/">← Tanvir’s build log</a><a href="https://github.com/mailtotanvir/Agent-Shield">GitHub ↗</a></nav>
+    <header>
+      <div class="eyebrow">Agent identity · Kubernetes security · September 2026</div>
+      <h1>The missing trust layer for AI agents.</h1>
+      <p class="lede">I built AgentShield to answer an uncomfortable question: how do you give an autonomous agent the authority and credentials it needs without turning every pod, log line, and workflow history into a new exfiltration path?</p>
+      <div class="stats">
+        <div class="stat"><strong>46</strong><span>security-focused tests</span></div>
+        <div class="stat"><strong>403</strong><span>unauthorized path denied</span></div>
+        <div class="stat"><strong>KMS</strong><span>real cloud unwrap path</span></div>
+        <div class="stat"><strong>RAM</strong><span>plaintext delivery boundary</span></div>
+      </div>
+    </header>
+
+    <article>
+      <section>
+        <h2>The credential problem hiding inside every agent</h2>
+        <p>An agent that can call a model is interesting. An agent that can deploy code, query customer data, rotate keys, or approve a payment is useful. The second kind also has something the first does not: authority worth stealing.</p>
+        <p>The familiar answer—put a token in a Kubernetes Secret and expose it as an environment variable—creates the wrong security boundary. Plaintext reaches the API server and etcd. It can leak into process listings, crash reports, debugging output, or an overpowered controller. Rotation becomes a distributed race. A bearer token remains useful to whoever copies it.</p>
+        <div class="panel callout danger"><strong>The hard problem is not storing a secret. It is proving who may receive it, narrowing what it can authorize, rotating it safely, and leaving evidence without recording the secret itself.</strong></div>
+      </section>
+
+      <section>
+        <h2>The product thesis: identity must travel with authority</h2>
+        <p>Most agent platforms separate identity, authorization, secret management, and workflow orchestration into independent setup tasks. The seams become the vulnerability. A correctly signed token can still carry excessive scope. A properly encrypted secret can still be delivered to the wrong pod. A durable rotation can still preserve plaintext forever in workflow history.</p>
+        <p>AgentShield treats those controls as one chain. Every handoff answers four questions: <strong>who is acting, what authority remains, which live workload receives it, and what durable evidence can be kept safely?</strong> That creates a practical control plane for delegated trust rather than another vault or authentication proxy.</p>
+        <div class="panel callout good"><strong>The unit of security for an autonomous system is not the credential. It is the entire path from human or service identity to a bounded action inside a specific running workload.</strong></div>
+      </section>
+
+      <section>
+        <h2>The boundary I chose</h2>
+        <p>AgentShield is intentionally not another identity provider. An external OIDC/OAuth system remains the issuer and owns signing keys, JWKS publication, and account recovery. AgentShield is the client-side enforcement layer: it validates tokens strictly, constrains delegated authority, protects refresh tokens, and brokers workload secrets.</p>
+        <div class="panel">
+          <div class="architecture" role="img" aria-label="AgentShield trust-boundary architecture">
+            <div class="node"><span><b>External identity provider</b>OIDC · JWKS · RFC 8693</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span><b>AgentShield policy</b>validate · narrow · bind</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><span><b>Client agent</b>short-lived authority</span></div>
+          </div>
+          <div class="flow">
+
+Kubernetes API ── ciphertext envelope ──► Secret broker ── KMS unwrap
+       ▲                                      │
+       │ TokenReview + live pod lookup        │ TLS, no-store
+       │                                      ▼
+Agent pod token ─────────────────────────► sidecar ──► RAM-backed file ──► agent
+          </div>
+        </div>
+        <p>This separation kept the prototype focused. I could demonstrate meaningful agent security without quietly inventing a second authorization server or claiming control over provider signing keys.</p>
+      </section>
+
+      <section>
+        <h2>Plaintext has a place—and it is not etcd</h2>
+        <p>The stored Kubernetes object contains a versioned AES-256-GCM envelope: ciphertext, nonce, a KMS-wrapped data-encryption key, and authenticated metadata. Namespace, secret name, schema version, and generation are bound as additional authenticated data, so copying or editing the envelope breaks decryption.</p>
+        <div class="steps">
+          <div class="step"><p><strong>Ingest locally.</strong> The writer generates a fresh DEK, encrypts the value, asks Cloud KMS to wrap the DEK, and submits only the envelope.</p></div>
+          <div class="step"><p><strong>Prove workload identity.</strong> A sidecar presents a short-lived, audience-bound ServiceAccount token. The broker calls TokenReview and resolves the live pod instead of trusting caller-supplied labels.</p></div>
+          <div class="step"><p><strong>Authorize before decrypting.</strong> Namespace, ServiceAccount, pod UID, and selectors must satisfy the <code>AgentSecret</code> policy. The default is deny.</p></div>
+          <div class="step"><p><strong>Deliver into memory.</strong> The broker unwraps and decrypts in process memory. The sidecar atomically writes a mode-0400 file into a memory-backed <code>emptyDir</code>.</p></div>
+        </div>
+        <p>This is a bounded claim, not magic. Plaintext exists briefly in process memory and in the pod’s tmpfs. A privileged node or cluster administrator can still read it, and Python cannot promise perfect zeroization. What the design removes is plaintext from Kubernetes API objects and ordinary persistent-volume paths.</p>
+      </section>
+
+      <section>
+        <h2>Identity is more than “the JWT decoded”</h2>
+        <p>The identity layer pins issuer and audience, allows only configured asymmetric algorithms, rejects attacker-controlled key URLs, bounds discovery and JWKS responses, refreshes once for an unknown <code>kid</code>, and fails closed when required state is unavailable.</p>
+        <p>Delegation uses an external RFC 8693 endpoint. Before exchange, requested scopes must be the intersection of the subject’s authority and the agent’s allowlist. After exchange, AgentShield checks the returned issuer, audience, subject relationship, scopes, expiry, and proof binding. It never widens authority and never mints a substitute token.</p>
+        <p>For high-sensitivity operations—writes, administration, payment, identity, token, credential, and secret management—the prototype implements DPoP first. The proof binds the method, normalized URI, timestamp, nonce where required, token hash, and a single-use identifier stored in a replay cache. There is no silent bearer fallback.</p>
+      </section>
+
+      <section>
+        <h2>Where Temporal belongs</h2>
+        <p>Rotation crosses slow and failure-prone systems: create a provider credential, encrypt it, publish a generation, verify delivery, promote it, and revoke its predecessor. That is exactly where durable workflow semantics help.</p>
+        <div class="panel flow">reserve generation
+      │
+      ▼
+create provider credential ── opaque one-use reference only
+      │
+      ▼
+encrypt + publish ──────────── ciphertext digest only
+      │
+      ▼
+verify delivery ────────────── opaque receipt only
+      │
+      ▼
+promote generation ─────────── revoke previous credential
+
+failure before promotion ───── disable candidate + keep previous active</div>
+        <p>Temporal does not sit in the request path. Workflow history is durable by design, so plaintext, bearer tokens, private keys, and raw provider errors are forbidden from workflow inputs, results, memo, search attributes, and exceptions. OCI tests cover retry, compensation, idempotency, replay, and a canary scan of history.</p>
+      </section>
+
+      <section>
+        <h2>A product architecture, not a bag of controls</h2>
+        <p>The value is not any individual standard. OIDC answers identity. RFC 8693 narrows delegated authority. DPoP makes selected tokens harder to replay. Kubernetes identifies the live workload. KMS protects the key hierarchy. Temporal makes multi-system rotation recoverable. AgentShield composes them into one enforceable lifecycle.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Plane</th><th>Responsibility</th><th>Failure posture</th></tr></thead>
+            <tbody>
+              <tr><td>Identity</td><td>Validate issuer, audience, signature, state, nonce, and proof binding</td><td>Reject ambiguous or unverifiable identity</td></tr>
+              <tr><td>Authority</td><td>Intersect scopes, constrain audience, cap lifetime, preserve delegation lineage</td><td>Never mint or widen authority locally</td></tr>
+              <tr><td>Delivery</td><td>Resolve the live pod, authorize it, unwrap only after approval, write to RAM</td><td>Deny before decryption</td></tr>
+              <tr><td>Lifecycle</td><td>Coordinate rotation, verification, promotion, revocation, and compensation</td><td>Keep the previous generation active until the candidate is proven</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>This composition also clarifies ownership. Identity providers remain responsible for token issuance and signing keys. Cloud KMS remains responsible for root key protection. Kubernetes remains responsible for workload identity and scheduling. Temporal remains responsible for durable coordination. AgentShield owns the policy and the secure transitions between them.</p>
+      </section>
+
+      <section>
+        <h2>What was actually demonstrated</h2>
+        <table>
+          <thead><tr><th>Claim</th><th>Evidence</th><th>Boundary</th></tr></thead>
+          <tbody>
+            <tr><td>Kubernetes identity</td><td>Broker received its intended GKE Workload Identity</td><td>Single-node validation cluster</td></tr>
+            <tr><td>KMS envelope path</td><td>Generation 1 encrypted; authorized retrieval matched its independent digest</td><td>Data Access audit events were not available</td></tr>
+            <tr><td>Authorization</td><td>Allowed workload succeeded; different ServiceAccount/label returned 403</td><td>Live binding-removal test remains future work</td></tr>
+            <tr><td>Memory delivery</td><td>Explicit sidecar and RAM-backed <code>emptyDir</code></td><td>Privileged node access is outside the guarantee</td></tr>
+            <tr><td>Durable rotation</td><td>Retry, compensation, idempotency, replay, and history redaction passed on OCI</td><td>No production Temporal service deployed</td></tr>
+            <tr><td>Supply-chain checks</td><td>46 tests plus lint, types, SAST, dependency and container scans</td><td>Prototype, not certification</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>What changes operationally</h2>
+        <p>AgentShield shifts secret access from deployment-time possession to request-time authorization. Applications no longer need a durable credential injected into their environment. Platform teams gain one policy point that understands both cryptographic identity and live workload context.</p>
+        <p>It also separates fast and slow decisions. Token validation and secret authorization stay synchronous and fail closed. Credential rotation becomes a durable workflow with retries and compensation. This keeps Temporal out of latency-sensitive requests while using it where partial progress and recovery actually matter.</p>
+        <div class="panel callout"><strong>The architectural move is from “which namespace owns this secret?” to “which verified workload may exercise this authority, for this purpose, right now?”</strong></div>
+      </section>
+
+      <section>
+        <h2>Where this becomes useful</h2>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Environment</th><th>Agent action</th><th>AgentShield boundary</th></tr></thead>
+            <tbody>
+              <tr><td>Software delivery</td><td>Deploy, roll back, or read CI credentials</td><td>Short-lived identity, scoped delegation, audited secret retrieval</td></tr>
+              <tr><td>Data platforms</td><td>Query governed warehouses or rotate connectors</td><td>Audience/scope limits and revocable credential generations</td></tr>
+              <tr><td>Customer support</td><td>Inspect tenant-specific operational data</td><td>Pod-bound identity and policy tied to workload context</td></tr>
+              <tr><td>Financial operations</td><td>Initiate sensitive write or payment workflows</td><td>DPoP required; no bearer fallback for high-sensitivity routes</td></tr>
+              <tr><td>Long-running agents</td><td>Survive credential rotation and partial outages</td><td>Temporal compensation without secrets in workflow history</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The broader idea is simple: agent identity should be a shrinking chain of authority. Each hop should be narrower, shorter-lived, bound to its caller where practical, and independently observable.</p>
+      </section>
+
+      <section>
+        <h2>Three implications for agent platforms</h2>
+        <ol>
+          <li><strong>Identity without delegation policy is incomplete.</strong> Knowing which agent is calling does not prove that the requested audience, scope, lifetime, or downstream action is appropriate.</li>
+          <li><strong>Secret managers need a delivery architecture.</strong> Encryption at rest says little about the final mile. The decisive controls live between workload attestation, authorization, decryption, and the application’s read boundary.</li>
+          <li><strong>Durability creates its own data boundary.</strong> Workflow engines are excellent for recovery, but their histories are databases. Secret-safe orchestration means passing references and receipts, not sensitive payloads.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>What production would still demand</h2>
+        <p>This is a serious prototype, not a production claim. The next layer includes multi-cluster availability, managed Redis and Temporal operations, immutable audit export, KMS Data Access logging, load and chaos testing, live revocation and pod-recreation exercises, upgrade guarantees, additional KMS providers, and formal compliance work.</p>
+        <p>The design also deliberately defers a CSI driver, automatic sidecar injection, mTLS-bound OAuth tokens, and an AgentShield-owned issuer. Those could be useful later; none is necessary to prove the core boundary.</p>
+      </section>
+
+      <section>
+        <h2>What to check in review</h2>
+        <ul>
+          <li>Can unverified claims influence a network destination, key choice, or authorization decision?</li>
+          <li>Can requested scopes become a union instead of an intersection?</li>
+          <li>Does plaintext enter a Kubernetes object, environment variable, log, trace, or workflow history?</li>
+          <li>Does a missing replay store, JWKS key, TokenReview response, or KMS dependency fail closed?</li>
+          <li>Are writer and reader identities separated, and are selectors resolved from the live pod?</li>
+          <li>Can cleanup run after every error path, including partial rotation and failed promotion?</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>The lesson</h2>
+        <div class="panel callout good"><strong>An agent does not become trustworthy because its token is valid. Trust comes from making authority narrow, secret exposure brief, failure closed, rotation recoverable, and every claim answerable with evidence.</strong></div>
+        <p>AgentShield is the smallest system I could build that demonstrates those properties together—and records the places where the proof is not finished.</p>
+        <a class="button" href="https://github.com/mailtotanvir/Agent-Shield">Explore the source</a>
+        <a class="button secondary" href="https://github.com/mailtotanvir/Agent-Shield/tree/main/docs/evidence">Read the evidence</a>
+      </section>
+    </article>
+
+    <footer>Built with Python, Kubernetes, Cloud KMS, OIDC, DPoP, and Temporal. Tested with synthetic canaries; no production credentials were used.</footer>
+  </div>
+</body>
+</html>
