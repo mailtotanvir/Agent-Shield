@@ -1,6 +1,6 @@
 # AgentShield Implementation and Evidence Plan
 
-Status: implementation active; OCI validation passed; GCP r5 torn down after preflight race
+Status: implementation active; OCI validation and core GKE/KMS delivery evidence passed; GCP r6 torn down
 Project: `redacted-gcp-project`  
 Repository: <https://github.com/mailtotanvir/Agent-Shield>  
 Prepared: 2026-09-18  
@@ -178,6 +178,12 @@ creation, the evidence run, and exact reverse-order teardown. A new resource,
 higher cap, broader IAM role, or changed command needs supplemental approval.
 
 ### Stage 3D — Approved GKE/KMS evidence run (paid, approval required)
+
+R6 completed the core path on 2026-09-19: sustained dataplane readiness,
+Workload Identity, KMS-backed ingestion and decryption, authorized memory-volume
+delivery, digest equality, unauthorized HTTP 403, and teardown. Removed-binding,
+pod-recreation, key-version-failure, and Data Access audit-correlation scenarios
+remain optional hardening evidence and must use a separately approved lifecycle.
 
 Only after the lifecycle packet is approved:
 

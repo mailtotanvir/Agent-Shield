@@ -8,6 +8,9 @@ The project is under active development. Its accepted initial architecture is in
 [design.md](design.md), the build/evidence workflow is in
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
+The bounded GKE/Cloud KMS demonstration and teardown results are recorded in
+[docs/evidence/gcp-r6-summary.md](docs/evidence/gcp-r6-summary.md).
+
 An optional Temporal workflow coordinates durable secret rotation without
 placing plaintext or bearer credentials in workflow history. Kubernetes remains
 responsible for reconciliation and authorized delivery.
